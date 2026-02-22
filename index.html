@@ -2,71 +2,113 @@
 <html>
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, initial-scale=1" />
 <style>
   body {
     margin: 0;
-    padding: 0;
     width: 1080px;
     height: 1920px;
     background: #0f1115;
     font-family: Arial, sans-serif;
+    color: white;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
   }
+
   .photo {
     width: 920px;
     height: 920px;
-    margin: auto;
+    margin-top: 80px;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 24px;
     border: 6px solid #2a2d35;
   }
+
   .stars {
-    margin-top:-0px;
-    font-size: 60px;
-    text-align: center;
+    margin-top: 30px;
+    font-size: 56px;
     color: #f5c26b;
+    text-align: center;
   }
+
   .review {
-    
-    font-size: 43px;
-    text-align: center;
+    margin-top: 20px;
+    font-size: 42px;
     line-height: 1.3;
-    color: white;
-    padding: 20px 60px 30px 60px;
+    text-align: center;
+    padding: 0 80px;
   }
+
   .name {
-    font-size: 43px;
-    text-align: center;
-    padding: 0 40px;
-    line-height: 1.3;
-    color: white;
-    padding-bottom:50px;
+    margin-top: 16px;
+    font-size: 40px;
+    opacity: 0.9;
   }
+
+  .spacer {
+    flex: 1;
+  }
+
   .footer {
-    font-size: 36px;
-    text-align: center;
-    opacity: 0.7;
-    color: grey;
-    padding-bottom:20px;
+    font-size: 34px;
+    opacity: 0.6;
+    margin-bottom: 12px;
   }
-   .deskneko {
-    font-size: 36px;
-    text-align: center;
-    opacity: 0.7;
-    color: grey;
-    padding-bottom:100px;
+
+  .deskneko {
+    font-size: 34px;
+    opacity: 0.6;
+    margin-bottom: 60px;
   }
 </style>
+
+<script>
+  function safeText(s, maxLen) {
+    if (!s) return "";
+    s = s.replace(/\s+/g, " ").trim();
+    if (s.length <= maxLen) return s;
+    const cut = s.slice(0, maxLen);
+    const p = Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"));
+    return (p > 80 ? cut.slice(0, p + 1) : cut) + "…";
+  }
+
+  function starsString(n) {
+    n = Math.max(1, Math.min(5, parseInt(n || "5", 10)));
+    return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+  }
+
+  window.onload = () => {
+    const p = new URLSearchParams(window.location.search);
+
+    const imageUrl   = p.get("image_url") || "";
+    const reviewText = safeText(p.get("review"), 180);
+    const name       = p.get("name") || "";
+    const stars      = starsString(p.get("stars"));
+
+    if (imageUrl) {
+      document.getElementById("photo").style.backgroundImage = `url('${imageUrl}')`;
+    }
+
+    document.getElementById("stars").innerText  = stars;
+    document.getElementById("review").innerText = `“${reviewText}”`;
+    document.getElementById("name").innerText   = name ? `– ${name}` : "";
+  };
+</script>
 </head>
+
 <body>
-  <div class="photo" style="background-image: url('{{image_url}}');"></div>
-  <div class="stars">★★★★★</div>
-  <div class="review">{{Review}}</div>
-    <div class="name">- {{Name}}</div>
+  <div id="photo" class="photo"></div>
+
+  <div id="stars" class="stars"></div>
+  <div id="review" class="review"></div>
+  <div id="name" class="name"></div>
+
+  <div class="spacer"></div>
+
   <div class="footer">Verified Etsy review</div>
   <div class="deskneko">@deskneko</div>
 </body>

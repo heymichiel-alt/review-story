@@ -82,9 +82,14 @@
   }
 
   .footer {
-    font-size: 34px;
-    opacity: 0.6;
-    margin-bottom: 12px;
+    margin-top:30px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:26px;
+    color:var(--etsy);
+    font-family: "Goudy Bookletter 1911", serif;
+    font-weight:600;
   }
 
   .deskneko {
@@ -92,6 +97,20 @@
     opacity: 0.6;
     margin-bottom: 60px;
   }
+
+  .etsyLogo{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:var(--etsy);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:28px;
+    font-family: "Goudy Bookletter 1911", serif;
+  }
+  
 </style>
 
 <script>
@@ -143,8 +162,10 @@
   <div id="name" class="name"></div>
 
   <div class="spacer"></div>
-
-  <div class="footer">Verified Etsy review</div>
+<div class="footer">
+        <div class="etsyLogo">E</div>
+        <div>Etsy verified review</div>
+      </div>
   <div class="deskneko">@deskneko</div>
 </body>
 </html>

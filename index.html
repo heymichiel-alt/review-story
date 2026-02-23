@@ -1,20 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1080, initial-scale=1" />
+
 <style>
   body {
     margin: 0;
     width: 1080px;
     height: 1920px;
-    background: #0f1115;
     font-family: Arial, sans-serif;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Blurred background layer */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(20px);
+    transform: scale(1.2);
+    z-index: 0;
+  }
+
+  /* Dark overlay for readability */
+  .bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 17, 21, 0.75);
+  }
+
+  /* Keep all content above background */
+  body > * {
+    position: relative;
+    z-index: 1;
   }
 
   .photo {
@@ -37,7 +65,7 @@
 
   .review {
     margin-top: 20px;
-    font-size: 42px;
+    font-size: 40px;
     line-height: 1.3;
     text-align: center;
     padding: 0 80px;
@@ -72,7 +100,11 @@
     s = s.replace(/\s+/g, " ").trim();
     if (s.length <= maxLen) return s;
     const cut = s.slice(0, maxLen);
-    const p = Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"));
+    const p = Math.max(
+      cut.lastIndexOf("."),
+      cut.lastIndexOf("!"),
+      cut.lastIndexOf("?")
+    );
     return (p > 80 ? cut.slice(0, p + 1) : cut) + "…";
   }
 
@@ -85,22 +117,25 @@
     const p = new URLSearchParams(window.location.search);
 
     const imageUrl   = p.get("image_url") || "";
-    const reviewText = safeText(p.get("review"), 180);
+    const reviewText = safeText(p.get("review"), 380);
     const name       = p.get("name") || "";
     const stars      = starsString(p.get("stars"));
 
     if (imageUrl) {
       document.getElementById("photo").style.backgroundImage = `url('${imageUrl}')`;
+      document.getElementById("bg").style.backgroundImage    = `url('${imageUrl}')`;
     }
 
     document.getElementById("stars").innerText  = stars;
-    document.getElementById("review").innerText = `“${reviewText}”`;
+    document.getElementById("review").innerText = reviewText ? `“${reviewText}”` : "";
     document.getElementById("name").innerText   = name ? `– ${name}` : "";
   };
 </script>
 </head>
 
 <body>
+  <div id="bg" class="bg"></div>
+
   <div id="photo" class="photo"></div>
 
   <div id="stars" class="stars"></div>

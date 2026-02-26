@@ -4,12 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1080, initial-scale=1" />
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500&family=DM+Sans:wght@400;500;700&family=Goudy+Bookletter+1911&display=swap" rel="stylesheet">
+
 <style>
+  :root{
+    --etsy:#e9611b;
+    --gold:#f5c26b;
+  }
+
   body {
     margin: 0;
     width: 1080px;
     height: 1920px;
-    font-family: Arial, sans-serif;
+    font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
     color: white;
     display: flex;
     flex-direction: column;
@@ -19,27 +28,23 @@
     overflow: hidden;
   }
 
-  /* Blurred background layer */
   .bg {
     position: absolute;
     inset: 0;
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(20px);
+    filter: blur(15px);
     transform: scale(1.2);
     z-index: 0;
   }
 
-  /* Dark overlay for readability */
   .bg::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(15, 17, 21, 0.75);
+    background: rgba(15, 17, 21, 0.55);
   }
 
-  /* Keep all content above background */
   body > * {
     position: relative;
     z-index: 1;
@@ -54,27 +59,54 @@
     background-repeat: no-repeat;
     border-radius: 24px;
     border: 6px solid #2a2d35;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photoBadge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 200px;
+  }
+
+  .photoBadge img {
+    width: 100%;
+    display: block;
   }
 
   .stars {
     margin-top: 30px;
     font-size: 56px;
-    color: #f5c26b;
+    color: var(--gold);
     text-align: center;
   }
 
   .review {
-    margin-top: 20px;
-    font-size: 40px;
-    line-height: 1.3;
+    margin-top: 22px;
+    font-family:
+      "Avenir",
+      "Avenir Next",
+      "Avenir Next LT Pro",
+      "Urbanist",
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      Arial,
+      sans-serif;
+    font-size: 38px;
+    line-height: 1.32;
     text-align: center;
-    padding: 0 80px;
+    padding: 0 90px;
+    max-width: 920px;
+    font-weight: 300;
+    letter-spacing: 0.1px;
   }
 
   .name {
-    margin-top: 16px;
-    font-size: 40px;
-    opacity: 0.9;
+    margin-top: 18px;
+    font-size: 34px;
+    opacity: 0.8;
   }
 
   .spacer {
@@ -87,24 +119,17 @@
     align-items:center;
     gap:12px;
     font-size: 29px;
-    color:var(--etsy);
+    color: var(--etsy);
     font-family: "Goudy Bookletter 1911", serif;
     font-weight:600;
     padding-bottom: 5px;
-  }
-
-  .deskneko {
-    font-size: 32px;
-    opacity: 0.6;
-    margin-bottom: 60px;
-    padding-top: 5px;
   }
 
   .etsyLogo{
     width:34px;
     height:34px;
     border-radius:50%;
-    background: #e9611b;
+    background: var(--etsy);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -112,62 +137,76 @@
     font-size: 29px;
     font-family: "Goudy Bookletter 1911", serif;
   }
-  
+
+  .deskneko {
+    font-size: 32px;
+    opacity: 0.6;
+    margin-bottom: 60px;
+  }
 </style>
 
 <script>
-  function safeText(s, maxLen) {
-    if (!s) return "";
-    s = s.replace(/\s+/g, " ").trim();
-    if (s.length <= maxLen) return s;
-    const cut = s.slice(0, maxLen);
-    const p = Math.max(
-      cut.lastIndexOf("."),
-      cut.lastIndexOf("!"),
-      cut.lastIndexOf("?")
-    );
-    return (p > 80 ? cut.slice(0, p + 1) : cut) + "…";
+  function truncate400(text) {
+    if (!text) return "";
+    text = String(text).replace(/\s+/g, " ").trim();
+    if (text.length <= 400) return text;
+    return text.slice(0, 400).trimEnd() + "....";
   }
 
   function starsString(n) {
-    n = Math.max(1, Math.min(5, parseInt(n || "5", 10)));
+    n = parseInt(n || "5", 10);
+    if (isNaN(n)) n = 5;
+    n = Math.max(1, Math.min(5, n));
     return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
   }
 
-  window.onload = () => {
+  document.addEventListener("DOMContentLoaded", () => {
     const p = new URLSearchParams(window.location.search);
 
-    const imageUrl   = p.get("image_url") || "";
-    const reviewText = safeText(p.get("review"), 380);
-    const name       = p.get("name") || "";
-    const stars      = starsString(p.get("stars"));
+    const imageUrl = p.get("image_url");
+    const review   = p.get("review");
+    const name     = p.get("name");
+    const stars    = p.get("stars");
 
     if (imageUrl) {
-      document.getElementById("photo").style.backgroundImage = `url('${imageUrl}')`;
-      document.getElementById("bg").style.backgroundImage    = `url('${imageUrl}')`;
+      document.querySelector(".bg").style.backgroundImage = `url('${imageUrl}')`;
+      document.querySelector(".photo").style.backgroundImage = `url('${imageUrl}')`;
     }
 
-    document.getElementById("stars").innerText  = stars;
-    document.getElementById("review").innerText = reviewText ? `“${reviewText}”` : "";
-    document.getElementById("name").innerText   = name ? `– ${name}` : "";
-  };
+    document.querySelector(".stars").textContent = starsString(stars);
+
+    const truncated = truncate400(review);
+    document.getElementById("review").textContent =
+      truncated ? `“${truncated}”` : "";
+
+    document.querySelector(".name").textContent =
+      name ? `– ${name}` : "";
+  });
 </script>
 </head>
 
 <body>
-  <div id="bg" class="bg"></div>
+  <div class="bg"></div>
 
-  <div id="photo" class="photo"></div>
+  <div class="photo">
+    <div class="photoBadge">
+      <img src="https://heymichiel-alt.github.io/static-assets/etsy-review.png" alt="Etsy review badge">
+    </div>
+  </div>
 
-  <div id="stars" class="stars"></div>
+  <div class="stars"></div>
+
   <div id="review" class="review"></div>
-  <div id="name" class="name"></div>
+
+  <div class="name"></div>
 
   <div class="spacer"></div>
-<div class="footer">
-        <div class="etsyLogo">E</div>
-        <div>Etsy verified review</div>
-      </div>
+
+  <div class="footer">
+    <div class="etsyLogo">E</div>
+    <div>Etsy verified review</div>
+  </div>
+
   <div class="deskneko">@DeskNeko</div>
 </body>
 </html>

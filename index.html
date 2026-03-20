@@ -26,6 +26,7 @@
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    background: #000;
   }
 
   .bg {
@@ -54,13 +55,14 @@
     width: 920px;
     height: 920px;
     margin-top: 80px;
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 24px;
     border: 6px solid #2a2d35;
     position: relative;
     overflow: hidden;
+    background-color: rgba(0,0,0,0.2);
   }
 
   .photoBadge {
@@ -113,31 +115,6 @@
     flex: 1;
   }
 
-  .footer {
-    margin-top:30px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size: 29px;
-    color: var(--etsy);
-    font-family: "Goudy Bookletter 1911", serif;
-    font-weight:600;
-    padding-bottom: 5px;
-  }
-
-  .etsyLogo{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    background: var(--etsy);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    font-size: 29px;
-    font-family: "Goudy Bookletter 1911", serif;
-  }
-
   .deskneko {
     font-size: 32px;
     opacity: 0.6;
@@ -168,10 +145,11 @@
     const name     = p.get("name");
     const stars    = p.get("stars");
 
-    if (imageUrl) {
-      document.querySelector(".bg").style.backgroundImage = `url('${imageUrl}')`;
-      document.querySelector(".photo").style.backgroundImage = `url('${imageUrl}')`;
-    }
+    // Placeholder image logic
+    const finalImage = imageUrl || "https://i.etsystatic.com/iap/ef136e/5170408153/iap_fullxfull.5170408153_7c3axj8y.jpg?version=0";
+    
+    document.querySelector(".bg").style.backgroundImage = `url('${finalImage}')`;
+    document.querySelector(".photo").style.backgroundImage = `url('${finalImage}')`;
 
     document.querySelector(".stars").textContent = starsString(stars);
 
@@ -201,7 +179,6 @@
   <div class="name"></div>
 
   <div class="spacer"></div>
-
 
   <div class="deskneko">@DeskNeko</div>
 </body>
